@@ -5,6 +5,7 @@ const path = require("path");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+require("dotenv").config();
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "client/index.html"));
@@ -23,12 +24,6 @@ io.on("connection", (socket) => {
 server.listen(process.env.PORT || 3003, () => {
   console.log("Server is running");
 });
-
-// const io = require("socket.io")(server);
-
-// app.use(express.static("public"));
-
-// app.use(express.static(__dirname + "/public"));
 
 const users = {};
 io.sockets.on("connection", (client) => {
@@ -50,3 +45,28 @@ io.sockets.on("connection", (client) => {
     client.broadcast.emit("user", users);
   });
 });
+
+//  SEND EMAIL LOGIC
+/**
+ * const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const msg = {
+  from: "karimorozova13@gmail.com",
+  to: "k.morozova@tiomarkets.com",
+  subject: "Sending with SendGrid is Fun",
+  text: "and easy to do anywhere, even with Node.js",
+  html: "<strong>Kari MOROZOVA</strong>",
+};
+app.post("/", (req, res) => {
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error.response.body);
+    });
+  res.json("Mail sent");
+});
+ * 
+ */
